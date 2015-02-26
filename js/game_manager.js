@@ -78,19 +78,19 @@ GameManager.prototype.addRandomTile = function () {
 			color = 'Red';
 		}
 	}else if(3 == noOfColors){
-		if(rand < 0.9 && rand > 0.5){
+		if(rand < 0.9 && rand > 0.6){
 			color = 'Green';
-		}else if(rand < 0.5 && rand > 0.1){
+		}else if(rand < 0.6 && rand > 0.3){
 			color = 'Red';
 		}else {
 			color = 'Blue';
 		}
 	}else if(4 == noOfColors){
-		if(rand < 0.9 && rand > 0.6){
+		if(rand < 0.9 && rand > 0.7){
 			color = 'Green';
-		}else if(rand < 0.6 && rand > 0.3){
+		}else if(rand < 0.7 && rand > 0.5){
 			color = 'Red';
-		}else if(rand < 0.3 && rand > 0.1){
+		}else if(rand < 0.5 && rand > 0.3){
 			color = 'Blue';
 		}else {
 			color = 'Yellow';
