@@ -1,8 +1,8 @@
-function Tile(position, color) {
+function Tile(position, color, numberCount) {
   this.x                = position.x;
   this.y                = position.y;
   this.color            = color || 'Green';
-
+  this.numberCount   	= numberCount || 1;
   this.previousPosition = null;
   this.mergedFrom       = null; // Tracks tiles that merged together
 }
@@ -22,6 +22,7 @@ Tile.prototype.serialize = function () {
       x: this.x,
       y: this.y
     },
-    color: this.color
+    color: this.color,
+	numberCount : this.numberCount
   };
 };

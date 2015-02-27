@@ -112,7 +112,7 @@ GameManager.prototype.addRandomTile = function () {
 	
     
 	
-	var tile = new Tile(this.grid.randomAvailableCell(), color);
+	var tile = new Tile(this.grid.randomAvailableCell(), color, 1);
 
     this.grid.insertTile(tile);
   }
@@ -197,7 +197,7 @@ GameManager.prototype.move = function (direction) {
 
         // Only one merger per row traversal?
         if (next && next.color === tile.color && !next.mergedFrom) {
-          var merged = new Tile(positions.next, tile.color);
+          var merged = new Tile(positions.next, tile.color, tile.numberCount);
           merged.mergedFrom = [tile, next];
 
           self.grid.insertTile(merged);
@@ -205,10 +205,10 @@ GameManager.prototype.move = function (direction) {
 
           // Converge the two tiles' positions
           tile.updatePosition(positions.next);
-
+		  tile.numberCount += 1;
           //Update the score
           self.score += 1;
-
+			
           // The mighty 2048 tile
           if (merged.value === 2048) self.won = true;
         } else {
