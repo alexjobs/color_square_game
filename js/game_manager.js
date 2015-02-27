@@ -112,7 +112,7 @@ GameManager.prototype.addRandomTile = function () {
 	
     
 	
-	var tile = new Tile(this.grid.randomAvailableCell(), color, 1);
+	var tile = new Tile(this.grid.randomAvailableCell(), color, this.numberCount);
 
     this.grid.insertTile(tile);
   }
@@ -199,13 +199,18 @@ GameManager.prototype.move = function (direction) {
         if (next && next.color === tile.color && !next.mergedFrom) {
           var merged = new Tile(positions.next, tile.color, tile.numberCount);
           merged.mergedFrom = [tile, next];
-
-          self.grid.insertTile(merged);
-          self.grid.removeTile(tile);
-
+		  //increase the number of counts for each bolck 
+		  merged.numberCount += 1;
+          if(merged.numberCount >=5){
+		  	self.grid.removeTile(merged);
+          	self.grid.removeTile(tile);
+		  }else{
+			self.grid.insertTile(merged);
+          	self.grid.removeTile(tile);
+	      }
           // Converge the two tiles' positions
           tile.updatePosition(positions.next);
-		  tile.numberCount += 1;
+		  
           //Update the score
           self.score += 1;
 			
@@ -299,7 +304,7 @@ GameManager.prototype.tileMatchesAvailable = function () {
 
           var other  = self.grid.cellContent(cell);
 
-          if (other && other.value === tile.value) {
+          if (other && other.color === tile.color) {
             return true; // These two tiles can be merged
           }
         }
