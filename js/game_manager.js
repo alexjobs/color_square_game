@@ -4,7 +4,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
 
-  this.startTiles     = 2;
+  this.startTiles     = csg_config.startTiles;
 
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
@@ -70,7 +70,7 @@ GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
     var color;
 	var rand = Math.random();
-	var noOfColors = 2;
+	var noOfColors = csg_config.noOfColors;
 	if(2 == noOfColors){
 		if(rand < 0.9 && rand > 0.5){
 			color = 'Green';
@@ -200,16 +200,17 @@ GameManager.prototype.move = function (direction) {
           var merged = new Tile(positions.next, tile.color, tile.numberCount);
           merged.mergedFrom = [tile, next];
 		  //increase the number of counts for each bolck 
-		  merged.numberCount += 1;
-          if(merged.numberCount >=5){
+		  merged.numberCount = merged.numberCount + tile.numberCount;
+          if(merged.numberCount >= csg_config.maxnumberCount){
 		  	self.grid.removeTile(merged);
           	self.grid.removeTile(tile);
 		  }else{
 			self.grid.insertTile(merged);
           	self.grid.removeTile(tile);
+			// Converge the two tiles' positions
+            tile.updatePosition(positions.next);
 	      }
-          // Converge the two tiles' positions
-          tile.updatePosition(positions.next);
+
 		  
           //Update the score
           self.score += 1;
