@@ -107,13 +107,9 @@ GameManager.prototype.addRandomTile = function () {
 		}else if(rand < 0.1){
 			color = 'Black';
 		}
-	}
-	
-	
-    
+	}  
 	
 	var tile = new Tile(this.grid.randomAvailableCell(), color, this.numberCount);
-
     this.grid.insertTile(tile);
   }
 };
@@ -200,17 +196,16 @@ GameManager.prototype.move = function (direction) {
           var merged = new Tile(positions.next, tile.color, tile.numberCount);
           merged.mergedFrom = [tile, next];
 		  //increase the number of counts for each bolck 
-		  merged.numberCount = merged.numberCount + tile.numberCount;
+		  merged.numberCount = merged.numberCount + next.numberCount;
           if(merged.numberCount >= csg_config.maxnumberCount){
 		  	self.grid.removeTile(merged);
-          	self.grid.removeTile(tile);
+          	self.grid.removeTile(next);
 		  }else{
 			self.grid.insertTile(merged);
-          	self.grid.removeTile(tile);
-			// Converge the two tiles' positions
-            tile.updatePosition(positions.next);
+          	self.grid.removeTile(tile);			
 	      }
-
+		  // Converge the two tiles' positions
+          tile.updatePosition(positions.next);
 		  
           //Update the score
           self.score += 1;
