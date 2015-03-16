@@ -3,9 +3,7 @@ function GameManager(size, InputManager, Actuator, StorageManager) {
   this.inputManager   = new InputManager;
   this.storageManager = new StorageManager;
   this.actuator       = new Actuator;
-
-  this.startTiles     = csg_game_config.startTiles;
-
+  this.startTiles     = csg_config.startTiles;
   this.inputManager.on("move", this.move.bind(this));
   this.inputManager.on("restart", this.restart.bind(this));
   this.inputManager.on("keepPlaying", this.keepPlaying.bind(this));
@@ -70,7 +68,7 @@ GameManager.prototype.addRandomTile = function () {
   if (this.grid.cellsAvailable()) {
     var color;
 	var rand = Math.random();
-	var noOfColors = csg_game_config.noOfColors;
+	var noOfColors = csg_config.noOfColors;
 	if(2 == noOfColors){
 		if(rand < 0.9 && rand > 0.5){
 			color = 'Green';
@@ -107,13 +105,9 @@ GameManager.prototype.addRandomTile = function () {
 		}else if(rand < 0.1){
 			color = 'Black';
 		}
-	}
+	}  
 	
-	
-    
-	
-	var tile = new Tile(this.grid.randomAvailableCell(), color, 1);
-
+	var tile = new Tile(this.grid.randomAvailableCell(), color, this.numberCount);
     this.grid.insertTile(tile);
   }
 };
@@ -199,11 +193,17 @@ GameManager.prototype.move = function (direction) {
         if (next && next.color === tile.color && !next.mergedFrom) {
           var merged = new Tile(positions.next, tile.color, tile.numberCount);
           merged.mergedFrom = [tile, next];
-			merged.numberCount += 1;	
-          self.grid.insertTile(merged);
-          self.grid.removeTile(tile);
+		  //increase the number of counts for each bolck 
+		  merged.numberCount = merged.numberCount + next.numberCount;
+          if(merged.numberCount >= csg_config.maxnumberCount){
+		  	self.grid.removeTile(merged);
+          	self.grid.removeTile(next);
+		  }else{
+			self.grid.insertTile(merged);
+          	self.grid.removeTile(tile);			
+	      }
+		  // Converge the two tiles' positions
 
-          // Converge the two tiles' positions
           tile.updatePosition(positions.next);
 		  
           //Update the score
@@ -299,7 +299,7 @@ GameManager.prototype.tileMatchesAvailable = function () {
 
           var other  = self.grid.cellContent(cell);
 
-          if (other && other.value === tile.value) {
+          if (other && other.color === tile.color) {
             return true; // These two tiles can be merged
           }
         }
